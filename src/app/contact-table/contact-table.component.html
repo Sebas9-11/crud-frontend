@@ -1,0 +1,109 @@
+<ng-container *ngIf="data && data.length > 0; else noData">
+  <div class="d-flex justify-content-end">
+    <button
+      type="button"
+      class="btn btn-primary my-2"
+      data-bs-toggle="modal"
+      data-bs-target="#createModal"
+    >
+      Add new user
+    </button>
+  </div>
+  <div
+    class="table-responsive rounded"
+    style="width: 100%; max-width: 800; overflow: auto; max-height: 800px"
+  >
+    <table class="table table-hover">
+      <colgroup>
+        <col style="width: 14%" />
+        <col style="width: 14%" />
+        <col style="width: 14%" />
+        <col style="width: 14%" />
+        <col style="width: 14%" />
+        <col style="width: 14%" />
+        <col style="width: 14%" />
+      </colgroup>
+
+      <thead class="table-dark text-center position-sticky top-0 align-middle">
+        <tr>
+          <th scope="col">First name</th>
+          <th scope="col">Last name</th>
+          <th scope="col">Phone</th>
+          <th scope="col" style="width: 100%; max-width: 300px">Comments</th>
+          <th scope="col">Edit</th>
+          <th scope="col">Delete</th>
+        </tr>
+      </thead>
+      <tbody class="text-center">
+        <tr *ngFor="let contact of data">
+          <td class="align-middle">{{ contact.firstName }}</td>
+          <td class="align-middle">{{ contact.lastName }}</td>
+          <td class="align-middle">{{ contact.phone }}</td>
+          <td class="align-middle" style="width: 100%; max-width: 300px">
+            {{ contact.comments }}
+          </td>
+          <td class="align-middle">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#updateModal"
+              (click)="openEditModal(contact.id)"
+            >
+              Edit
+            </button>
+          </td>
+          <td class="align-middle">
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteModal"
+              (click)="deleteContact(contact.id)"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>
+
+<!-- alter message -->
+<ng-template #noData>
+  <div class="text-center">
+    <h1>No contacts</h1>
+    <p>You can add new contact by clicking on the button below</p>
+    <div class="d-flex justify-content-center">
+      <button
+        type="button"
+        class="btn btn-primary my-2"
+        data-bs-toggle="modal"
+        data-bs-target="#createModal"
+      >
+        Add new contact
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- delete modal -->
+<app-delete-modal (confirmDeleteContact)="confirmDeleteContact()" />
+
+<!-- create modal -->
+<app-modal-container [modalId]="'createModal'" titleModal="Create contact">
+  <app-contact-form titleBtn="Create contact" (contactAdded)="refreshTable()" />
+</app-modal-container>
+
+<!-- update modal -->
+<app-modal-container [modalId]="'updateModal'" titleModal="Edit contact">
+  <app-update-contact-form
+    [firstName]="contactUpdate.firstName"
+    [lastName]="contactUpdate.lastName"
+    [phone]="contactUpdate.phone"
+    [comments]="contactUpdate.comments"
+    [id]="contactUpdate.id"
+    (contactUpdated)="refreshTable()"
+  />
+</app-modal-container>
